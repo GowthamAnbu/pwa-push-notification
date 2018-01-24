@@ -34,4 +34,15 @@ self.addEventListener('push', function(event) {
 	};
 
 	event.waitUntil(self.registration.showNotification(title, options));
-  });
+});
+
+// STEP:5 notificationclick listener
+self.addEventListener('notificationclick', function(event) {
+  console.log('[Service Worker] Notification click Received.');
+
+  event.notification.close();
+
+  event.waitUntil(
+    clients.openWindow('https://developers.google.com/web/')
+  );
+});
