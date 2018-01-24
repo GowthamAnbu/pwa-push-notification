@@ -21,8 +21,9 @@
 
 'use strict';
 
-const applicationServerPublicKey = '<Your Public Key>';
-
+// STEP:2 copy public/private key pairs
+const applicationServerPublicKey = 'BFyBatGw2wxHHNhTYn3URWQcHQBwMqioqhq4-N0l8Eye5NOHr5zLAViNeiQgqMoUwLhbxvnseXEl77LPpr8lcUU';
+// xqzCOCx_0FGw6rVCuRYV_FAS2oATwYnCXibdziQooW0
 const pushButton = document.querySelector('.js-push-btn');
 
 let isSubscribed = false;
@@ -43,7 +44,7 @@ function urlB64ToUint8Array(base64String) {
   return outputArray;
 }
 
-// STEP:1 initial service worker registration #L47-L62
+// STEP:1 initial service worker registration
 if ('serviceWorker' in navigator && 'PushManager' in window) {
   console.log('Service Worker and Push is supported');
 
@@ -52,6 +53,7 @@ if ('serviceWorker' in navigator && 'PushManager' in window) {
     console.log('Service Worker is registered', swReg);
 
     swRegistration = swReg;
+    initializeUI();
   })
   .catch(function(error) {
     console.error('Service Worker Error', error);
@@ -59,4 +61,32 @@ if ('serviceWorker' in navigator && 'PushManager' in window) {
 } else {
   console.warn('Push messaging is not supported');
   pushButton.textContent = 'Push Not Supported';
+}
+
+// STEP:2 initializing UI  based on subscription web support; not the user subscription
+function initializeUI() {
+  // Set the initial subscription value (ORIGINAL)
+  swRegistration.pushManager.getSubscription()
+  .then(function(subscription) {
+    isSubscribed = !(subscription === null);
+
+    if (isSubscribed) {
+      console.log('User IS subscribed.');
+    } else {
+      console.log('User is NOT subscribed.');
+    }
+
+    updateBtn();
+  });
+}
+
+// STEP:2 updating the UI based on the user subscription
+function updateBtn() {
+  if (isSubscribed) {
+    pushButton.textContent = 'Disable Push Messaging';
+  } else {
+    pushButton.textContent = 'Enable Push Messaging';
+  }
+
+  pushButton.disabled = false;
 }
