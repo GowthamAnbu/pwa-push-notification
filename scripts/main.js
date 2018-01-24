@@ -67,7 +67,7 @@ function initializeUI() {
   pushButton.addEventListener('click', function() {
     pushButton.disabled = true;
     if (isSubscribed) {
-      // TODO: Unsubscribe user
+      unsubscribeUser(); // // STEP:5 unsubscribing user
     } else {
       subscribeUser();
     }
@@ -132,4 +132,26 @@ function updateSubscriptionOnServer(subscription) {
   } else {
     subscriptionDetails.classList.add('is-invisible');
   }
+}
+
+// STEP:5 unsubscribing user and related ui changes
+function unsubscribeUser() {
+  swRegistration.pushManager.getSubscription()
+  .then(function(subscription) {
+    if (subscription) {
+      // TODO: Tell application server to delete subscription
+      return subscription.unsubscribe();
+    }
+  })
+  .catch(function(error) {
+    console.log('Error unsubscribing', error);
+  })
+  .then(function() {
+    updateSubscriptionOnServer(null);
+
+    console.log('User is unsubscribed.');
+    isSubscribed = false;
+
+    updateBtn();
+  });
 }
